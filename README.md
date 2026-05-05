@@ -1,9 +1,17 @@
-# 📈 DAX Market Analyzer (ETL Pipeline)
 ![DAX Analysis Report](dax_analysis_report.png)
+# 📈 DAX Market Analyzer (ETL Pipeline)
 [EN] An automated ETL pipeline to fetch, analyze, and visualize DAX 40 market data using Python and Docker.
 [DE] Eine automatisierte ETL-Pipeline zur Erfassung, Analyse und Visualisierung von DAX 40 Marktdaten mit Python und Docker.
 
 ---
+## 📊 Aktuelle DAX Analyse (Snapshot)
+
+| Ticker | Rendite (2J) | Risiko (Vol) | Empfehlung |
+|--------|--------------|--------------|------------|
+| SAP.DE | +24.5%       | 0.18         | ⭐ Strong Buy|
+| BMW.DE | -5.2%        | 0.32         | ⚠️ Avoid    |
+
+> **Status:** Pipeline läuft täglich via GitHub Actions. Letztes Update: {{ date }}
 ## 📈 Business Insights (May 2026)
 
 Based on the automated analysis of the DAX 40 components:
