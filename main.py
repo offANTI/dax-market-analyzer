@@ -8,7 +8,7 @@ from src.visualizer import create_visuals
 
 def run_pipeline(full_update=True):
     print("\n" + "=" * 40)
-    print("🚀 DAX-MARKET-ANALYZER START")
+    print("DAX-MARKET-ANALYZER START")
     print("=" * 40)
 
     dax_tickers = ['SAP.DE', 'SIE.DE', 'ALV.DE', 'BMW.DE', 'DTE.DE', 'AIR.DE']
