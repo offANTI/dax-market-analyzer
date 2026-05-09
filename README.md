@@ -1,5 +1,5 @@
 ![DAX Analysis Report](dax_analysis_report.png)
-## 📊 Последний отчет
+## 📊 Latest Analysis Report
 ![Market Analysis](dax_analysis_report.png)
 # 📈 DAX Market Analyzer (ETL Pipeline)
 [EN] An automated ETL pipeline to fetch, analyze, and visualize DAX 40 market data using Python and Docker.
