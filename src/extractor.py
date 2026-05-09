@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def fetch_data(tickers):
-    """Extrahiert historische Marktdaten von Yahoo Finance."""
+
     print(f"--- [EXTRAKTION] Starte Download für: {tickers}")
     data_list = []
     for ticker in tickers:
@@ -13,5 +13,5 @@ def fetch_data(tickers):
         data_list.append(hist)
 
     full_data = pd.concat(data_list)
-    print(f"--- [EXTRAKTION] {len(full_data)} Datensätze erfolgreich geladen.")
+    full_data = full_data.reset_index()
     return full_data
