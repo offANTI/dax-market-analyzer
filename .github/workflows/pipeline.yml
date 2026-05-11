@@ -33,3 +33,5 @@ jobs:
           git add dax_analysis_report.png
           git commit -m "Auto-update: Analysis results $(date)" || echo "No changes"
           git push
+permissions:
+  contents: write
