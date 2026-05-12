@@ -1,6 +1,6 @@
 import argparse
 import logging
-import sys
+import time
 
 from src.database import save_to_db
 from src.extractor import fetch_data
