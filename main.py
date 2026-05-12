@@ -1,62 +1,60 @@
 import argparse
+import logging
 import sys
+
+from src.database import save_to_db
 from src.extractor import fetch_data
 from src.transformer import process_data
-from src.database import save_to_db
 from src.visualizer import create_visuals
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
+
+logger = logging.getLogger(__name__)
+
+DAX_SAMPLE_TICKERS = ["SAP.DE", "SIE.DE", "ALV.DE", "BMW.DE", "DTE.DE", "AIR.DE"]
 
 
 def run_pipeline(full_update: bool = True) -> None:
-    print("\n" + "=" * 6)
-    print("=" * 6)
-
-    dax_tickers = ['SAP.DE', 'SIE.DE', 'ALV.DE', 'BMW.DE', 'DTE.DE', 'AIR.DE']
+    logger.info("Starting DAX sample portfolio pipeline.")
 
     if full_update:
-        
-        rohdaten = fetch_data(dax_tickers)
-        save_to_db(rohdaten, 'rohdaten_preise')
+        raw_data = fetch_data(DAX_SAMPLE_TICKERS)
+        save_to_db(raw_data, "raw_prices")
 
-        analyse_ergebnisse = process_data(rohdaten)
-
-        save_to_db(analyse_ergebnisse, 'processed_analytics')
+        analytics = process_data(raw_data)
+        save_to_db(analytics, "processed_analytics")
 
     create_visuals()
 
-    print("=" * 6)
-    print("PIPELINE ERFOLGREICH BEENDET")
-    print("=" * 6 + "\n")
+    logger.info("Pipeline finished successfully.")
 
 
-def main():
-    
+def main() -> None:
     parser = argparse.ArgumentParser(
-        description='DAX Market Analyzer CLI - Ein Tool zur Analyse von Aktiendaten.'
+        description="DAX Sample Portfolio Analyzer CLI"
     )
 
-    
     parser.add_argument(
-        '--update',
-        action='store_true',
-        help='Führt den vollständigen ETL-Prozess aus (Daten laden, transformieren, speichern).'
-    )
-    parser.add_argument(
-        '--report',
-        action='store_true',
-        help='Erstellt nur den visuellen Bericht basierend auf vorhandenen Daten.'
+        "--update",
+        action="store_true",
+        help="Run full ETL process.",
     )
 
-  
-    if len(sys.argv) == 1:
-        parser.print_help(sys.stderr)
-        sys.exit(1)
+    parser.add_argument(
+        "--report",
+        action="store_true",
+        help="Create report from existing database data.",
+    )
 
     args = parser.parse_args()
 
-    if args.update:
-        run_pipeline(full_update=True)
-    elif args.report:
-        run_pipeline(full_update=False)
+    if args.update == args.report:
+        parser.error("Choose exactly one option: --update or --report")
+
+    run_pipeline(full_update=args.update)
 
 
 if __name__ == "__main__":
