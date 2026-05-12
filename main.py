@@ -18,18 +18,39 @@ DAX_SAMPLE_TICKERS = ["SAP.DE", "SIE.DE", "ALV.DE", "BMW.DE", "DTE.DE", "AIR.DE"
 
 
 def run_pipeline(full_update: bool = True) -> None:
+    start_time = time.time()
+
     logger.info("Starting DAX sample portfolio pipeline.")
+    logger.info("Tracking %s tickers.", len(DAX_SAMPLE_TICKERS))
 
     if full_update:
         raw_data = fetch_data(DAX_SAMPLE_TICKERS)
+
+        logger.info(
+            "Extracted %s rows for %s tickers.",
+            len(raw_data),
+            raw_data["Ticker"].nunique(),
+        )
+
         save_to_db(raw_data, "raw_prices")
 
         analytics = process_data(raw_data)
+
+        logger.info(
+            "Generated %s analytics records.",
+            len(analytics),
+        )
+
         save_to_db(analytics, "processed_analytics")
 
     create_visuals()
 
-    logger.info("Pipeline finished successfully.")
+    execution_time = round(time.time() - start_time, 2)
+
+    logger.info(
+        "Pipeline finished successfully in %s seconds.",
+        execution_time,
+    )
 
 
 def main() -> None:
