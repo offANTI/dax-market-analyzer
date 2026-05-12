@@ -6,7 +6,7 @@ from src.database import save_to_db
 from src.visualizer import create_visuals
 
 
-def run_pipeline(full_update=True):
+def run_pipeline(full_update: bool = True) -> None:
     print("\n" + "=" * 6)
     print("=" * 6)
 
