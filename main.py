@@ -7,8 +7,8 @@ from src.visualizer import create_visuals
 
 
 def run_pipeline(full_update=True):
-    print("\n" + "=" * 40)
-    print("=" * 40)
+    print("\n" + "=" * 6)
+    print("=" * 6)
 
     dax_tickers = ['SAP.DE', 'SIE.DE', 'ALV.DE', 'BMW.DE', 'DTE.DE', 'AIR.DE']
 
@@ -23,9 +23,9 @@ def run_pipeline(full_update=True):
 
     create_visuals()
 
-    print("=" * 40)
+    print("=" * 6)
     print("PIPELINE ERFOLGREICH BEENDET")
-    print("=" * 40 + "\n")
+    print("=" * 6 + "\n")
 
 
 def main():
