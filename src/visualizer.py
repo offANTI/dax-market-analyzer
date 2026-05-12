@@ -1,64 +1,88 @@
+import logging
+import os
+import sqlite3
+
 import matplotlib
-matplotlib.use('Agg') 
+
+matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
-import seaborn as sns
-import sqlite3
 import pandas as pd
-import os
 
-def create_visuals(db_path='dax_market_data.db'):
-    print("--- [VISUALISIERUNG] Erstelle Analyse-Bericht...")
+logger = logging.getLogger(__name__)
 
+
+def create_visuals(db_path: str = "dax_market_data.db") -> None:
+    logger.info("Creating visual analytics reports.")
 
     if not os.path.exists(db_path):
-        print(f" Fehler: Datenbank {db_path} nicht gefunden!")
-        return
+        raise FileNotFoundError(f"Database not found: {db_path}")
 
-    conn = sqlite3.connect(db_path)
+    os.makedirs("reports", exist_ok=True)
 
-    try:
-        
-        df_raw = pd.read_sql("SELECT Date, Ticker, Close FROM rohdaten_preise", conn)
-        df_pivot = df_raw.pivot(index='Date', columns='Ticker', values='Close')
-        corr_matrix = df_pivot.ffill().corr()
+    with sqlite3.connect(db_path) as conn:
+        metrics = pd.read_sql("SELECT * FROM processed_analytics", conn)
 
-       
-        df_perf = pd.read_sql("SELECT * FROM processed_analytics", conn)
-        df_perf = df_perf.sort_values(by='Gesamtrendite', ascending=False)
+    if metrics.empty:
+        raise ValueError("No analytics data found in processed_analytics table.")
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 18))
-        sns.set_theme(style="whitegrid")
+    create_total_return_chart(metrics)
+    create_volatility_chart(metrics)
+    create_drawdown_chart(metrics)
 
-     
-        plot = sns.barplot(x='Ticker', y='Gesamtrendite', data=df_perf, palette='viridis', ax=ax1)
-        ax1.set_title('DAX 40 Performance Analyse (2 Jahre)', fontsize=16, fontweight='bold')
-        
-      
-        for p in plot.patches:
-            ax1.annotate(format(p.get_height(), '.2%'),
-                         (p.get_x() + p.get_width() / 2., p.get_height()),
-                         ha='center', va='center', xytext=(0, 9), textcoords='offset points')
+    logger.info("Visual reports saved to reports/ directory.")
 
-       
-        sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", ax=ax2)
-        ax2.set_title('Korrelations-Matrix: Aktien vs. Gas (TTF)', fontsize=14, fontweight='bold')
 
-       
-        plt.text(0.5, -0.05, 'Automatisch generiert von DAX-Market-Analyzer Pipeline',
-                 horizontalalignment='center', transform=ax2.transAxes, color='gray', style='italic')
+def create_total_return_chart(metrics: pd.DataFrame) -> None:
+    data = metrics.sort_values("total_return", ascending=False)
 
-        plt.tight_layout()
-        
-        output_file = 'dax_analysis_report.png'
-        plt.savefig(output_file, dpi=300)
-        plt.close()
-        print(f" [VISUALISIERUNG] Bericht успешно сохранен как '{output_file}'.")
+    plt.figure(figsize=(10, 6))
+    plt.bar(data["Ticker"], data["total_return"])
+    plt.title("Total Return Comparison")
+    plt.xlabel("Ticker")
+    plt.ylabel("Total Return")
 
-    except Exception as e:
-        print(f"Fehler: {e}")
-    finally:
-        conn.close()
+    for index, value in enumerate(data["total_return"]):
+        plt.text(index, value, f"{value:.1%}", ha="center", va="bottom")
+
+    plt.tight_layout()
+    plt.savefig("reports/total_return.png", dpi=300)
+    plt.close()
+
+
+def create_volatility_chart(metrics: pd.DataFrame) -> None:
+    data = metrics.sort_values("annualized_volatility", ascending=False)
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(data["Ticker"], data["annualized_volatility"])
+    plt.title("Annualized Volatility Analysis")
+    plt.xlabel("Ticker")
+    plt.ylabel("Annualized Volatility")
+
+    for index, value in enumerate(data["annualized_volatility"]):
+        plt.text(index, value, f"{value:.1%}", ha="center", va="bottom")
+
+    plt.tight_layout()
+    plt.savefig("reports/volatility.png", dpi=300)
+    plt.close()
+
+
+def create_drawdown_chart(metrics: pd.DataFrame) -> None:
+    data = metrics.sort_values("max_drawdown")
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(data["Ticker"], data["max_drawdown"])
+    plt.title("Maximum Drawdown Analysis")
+    plt.xlabel("Ticker")
+    plt.ylabel("Max Drawdown")
+
+    for index, value in enumerate(data["max_drawdown"]):
+        plt.text(index, value, f"{value:.1%}", ha="center", va="top")
+
+    plt.tight_layout()
+    plt.savefig("reports/drawdown.png", dpi=300)
+    plt.close()
+
 
 if __name__ == "__main__":
     create_visuals()
