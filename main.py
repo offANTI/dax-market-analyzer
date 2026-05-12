@@ -36,10 +36,7 @@ def run_pipeline(full_update: bool = True) -> None:
 
         analytics = process_data(raw_data)
 
-        logger.info(
-            "Generated %s analytics records.",
-            len(analytics),
-        )
+        logger.info("Generated %s analytics records.", len(analytics))
 
         save_to_db(analytics, "processed_analytics")
 
@@ -47,10 +44,7 @@ def run_pipeline(full_update: bool = True) -> None:
 
     execution_time = round(time.time() - start_time, 2)
 
-    logger.info(
-        "Pipeline finished successfully in %s seconds.",
-        execution_time,
-    )
+    logger.info("Pipeline finished successfully in %s seconds.", execution_time)
 
 
 def main() -> None:
