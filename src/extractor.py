@@ -1,17 +1,31 @@
-import yfinance as yf
+import logging
+
 import pandas as pd
+import yfinance as yf
+
+logger = logging.getLogger(__name__)
 
 
-def fetch_data(tickers):
+def fetch_data(tickers: list[str], period: str = "2y") -> pd.DataFrame:
+    logger.info("Starting data extraction for tickers: %s", tickers)
 
-    print(f"--- [EXTRAKTION] Starte Download für: {tickers}")
-    data_list = []
+    data_frames = []
+
     for ticker in tickers:
         stock = yf.Ticker(ticker)
-        hist = stock.history(period="2y")
-        hist['Ticker'] = ticker
-        data_list.append(hist)
+        history = stock.history(period=period)
 
-    full_data = pd.concat(data_list)
-    full_data = full_data.reset_index()
+        if history.empty:
+            logger.warning("No data returned for ticker: %s", ticker)
+            continue
+
+        history = history.reset_index()
+        history["Ticker"] = ticker
+        data_frames.append(history)
+
+    if not data_frames:
+        raise ValueError("No market data was extracted.")
+
+    full_data = pd.concat(data_frames, ignore_index=True)
+
     return full_data
