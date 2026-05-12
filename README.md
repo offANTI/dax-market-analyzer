@@ -1,61 +1,308 @@
-# 📈 DAX Market Analyzer (ETL Pipeline)
-![DAX Analysis Report](dax_analysis_report.png)
-## 📊 Latest Analysis Report
-![Market Analysis](dax_analysis_report.png)
-[EN] An automated ETL pipeline to fetch, analyze, and visualize DAX 40 market data using Python and Docker.
-[DE] Eine automatisierte ETL-Pipeline zur Erfassung, Analyse und Visualisierung von DAX 40 Marktdaten mit Python und Docker.
+# DAX Market Analyzer
 
----
-## 📊 Aktuelle DAX Analyse (Snapshot)
+Automated ETL pipeline for DAX equity analytics, risk monitoring, and reporting.
 
-| Ticker | Rendite (2J) | Risiko (Vol) | Empfehlung |
-|--------|--------------|--------------|------------|
-| SAP.DE | +24.5%       | 0.18         | ⭐ Strong Buy|
-| BMW.DE | -5.2%        | 0.32         | ⚠️ Avoid    |
+This project extracts historical stock market data from Yahoo Finance, validates and transforms financial time series datasets, calculates financial analytics metrics, stores processed datasets in SQLite, and generates automated visual reports.
 
-> **Status:** Pipeline läuft täglich via GitHub Actions. Letztes Update: {{ date }}
-## 📈 Business Insights (May 2026)
+The project is designed as a production-style Analytics Engineering portfolio project focused on:
 
-Based on the automated analysis of the DAX 40 components:
-
-*   **Top Performer:** `SAP.DE` shows the highest total return with moderate volatility.
-*   **Risk Warning:** `BMW.DE` exhibits the highest volatility in the current period, suggesting cautious entry.
-*   **Safe Haven:** `ALV.DE` maintains the best risk/reward ratio (Sharpe-ratio equivalent).
-
-> **Strategy Note:** The portfolio should prioritize `SAP.DE` and `ALV.DE` for long-term stability, while `BMW.DE` requires active stop-loss management.
-## 🚀 Overview / Übersicht
-
-**English:**
-This project automates the process of financial data analysis. It fetches real-time data from Yahoo Finance, processes it using Pandas, stores it in a SQLite database, and generates a visual performance report. The entire application is containerized with Docker for seamless deployment.
-
-**Deutsch:**
-Dieses Projekt automatisiert den Prozess der Finanzdatenanalyse. Es bezieht Echtzeitdaten von Yahoo Finance, verarbeitet diese mit Pandas, speichert sie in einer SQLite-Datenbank und erstellt einen visuellen Performance-Bericht. Die gesamte Anwendung ist mit Docker containerisiert, um eine reibungslose Bereitstellung zu gewährleisten.
+* ETL pipelines
+* financial analytics
+* data validation
+* automation
+* reporting workflows
+* Dockerized environments
+* GitHub Actions automation
 
 ---
 
-## 🛠 Tech Stack
+# Project Overview
 
-* **Language:** Python 3.11+
-* **Data:** Pandas, yfinance, SQLAlchemy
-* **Visualization:** Matplotlib / Seaborn
-* **Infrastructure:** Docker (Linux-based container)
+The pipeline automates the workflow of collecting and analyzing stock market data for selected DAX companies.
+
+The system performs:
+
+1. Data extraction from Yahoo Finance
+2. Validation and preprocessing of financial datasets
+3. Financial metric calculations
+4. SQLite storage for raw and processed layers
+5. Automated report generation
+6. Scheduled execution with GitHub Actions
 
 ---
 
-## 📦 Installation & Usage / Installation & Nutzung
+# Business Problem
 
-### Prerequisites / Voraussetzungen
-* Docker Desktop installed
-* Git
+Financial analysts and portfolio managers require automated workflows to monitor market performance, volatility, and downside risk across equities.
 
-### Step-by-Step
+This project demonstrates how to build a lightweight analytics pipeline capable of:
 
-1. **Clone the repository / Repository klonen:**
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/dax-analyzer.git](https://github.com/YOUR_USERNAME/dax-analyzer.git)
-   cd dax-analyzer
+* monitoring stock performance automatically
+* detecting volatility and drawdown risk
+* generating analytics-ready datasets
+* automating recurring reporting workflows
 
-## 🤖 Automation
-This pipeline is fully automated using **GitHub Actions**. 
-* **Schedule:** Runs every day at 08:00 UTC.
-* **Environment:** Executed in a virtualized Ubuntu environment via Docker-compatible workflow.   
+---
+
+# Pipeline Architecture
+
+```text
+Yahoo Finance API
+        ↓
+Extract Layer
+        ↓
+Validation Layer
+        ↓
+Transformation Layer
+        ↓
+SQLite Storage
+        ↓
+Visualization & Reporting
+        ↓
+GitHub Actions Automation
+```
+
+---
+
+# Tech Stack
+
+| Category         | Technologies      |
+| ---------------- | ----------------- |
+| Programming      | Python            |
+| Data Processing  | Pandas, NumPy     |
+| Database         | SQLite            |
+| Visualization    | Matplotlib        |
+| APIs             | Yahoo Finance API |
+| Automation       | GitHub Actions    |
+| Containerization | Docker            |
+| Logging          | Python Logging    |
+| CLI              | argparse          |
+
+---
+
+# Analytics Metrics
+
+The pipeline calculates multiple financial analytics metrics:
+
+| Metric                | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| Total Return          | Overall asset performance during the analysis period |
+| Annualized Volatility | Risk estimation based on daily return variability    |
+| Max Drawdown          | Largest historical decline from peak value           |
+| Daily Returns         | Percentage-based daily performance tracking          |
+| Observation Count     | Number of valid trading observations                 |
+
+---
+
+# Data Validation
+
+The transformation layer includes multiple validation checks:
+
+* empty dataset detection
+* required column validation
+* missing value checks
+* negative price detection
+* minimum observation threshold validation
+* datetime conversion and sorting
+
+This improves reliability and prevents invalid analytics outputs.
+
+---
+
+# Generated Visualizations
+
+The reporting layer automatically generates visual analytics reports based on processed market data.
+
+### Total Return Comparison
+
+Comparison of cumulative performance across selected DAX equities.
+
+![Total Return Report](reports/total_return.png)
+
+---
+
+### Annualized Volatility Analysis
+
+Risk comparison based on annualized daily return volatility.
+
+![Volatility Report](reports/volatility.png)
+
+---
+
+### Maximum Drawdown Analysis
+
+Visualization of downside risk and historical peak-to-trough declines.
+
+![Drawdown Report](reports/drawdown.png)
+
+---
+
+# Example Insights
+
+Example analytics insights generated from the pipeline:
+
+* SAP.DE demonstrated strong long-term return performance during the selected period.
+* BMW.DE showed higher volatility compared to more defensive equities.
+* AIR.DE experienced deeper drawdown risk relative to other selected assets.
+* DTE.DE displayed lower volatility characteristics compared to cyclical stocks.
+
+---
+
+# Example Pipeline Logs
+
+```text
+2026-05-12 10:22:01 | INFO | __main__ | Starting DAX sample portfolio pipeline.
+2026-05-12 10:22:01 | INFO | __main__ | Tracking 6 tickers.
+2026-05-12 10:22:04 | INFO | __main__ | Extracted 7560 rows for 6 tickers.
+2026-05-12 10:22:05 | INFO | __main__ | Generated 6 analytics records.
+2026-05-12 10:22:07 | INFO | __main__ | Pipeline finished successfully in 6.24 seconds.
+```
+
+---
+
+# Project Structure
+
+```text
+dax-market-analyzer/
+│
+├── src/
+│   ├── extractor.py
+│   ├── transformer.py
+│   ├── database.py
+│   ├── visualizer.py
+│
+├── reports/
+│   ├── total_return.png
+│   ├── volatility.png
+│   ├── drawdown.png
+│
+├── .github/workflows/
+│
+├── Dockerfile
+├── requirements.txt
+├── main.py
+└── README.md
+```
+
+---
+
+# Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/offANTI/dax-market-analyzer.git
+cd dax-market-analyzer
+```
+
+Create virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate environment:
+
+### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### macOS/Linux
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# CLI Usage
+
+Run full ETL pipeline:
+
+```bash
+python main.py --update
+```
+
+Generate report from existing database:
+
+```bash
+python main.py --report
+```
+
+---
+
+# Docker Usage
+
+Build Docker image:
+
+```bash
+docker build -t dax-market-analyzer .
+```
+
+Run container:
+
+```bash
+docker run dax-market-analyzer
+```
+
+---
+
+# Automation
+
+The pipeline supports automated execution through GitHub Actions.
+
+Features:
+
+* scheduled daily execution
+* automated report generation
+* automated SQLite updates
+* reproducible Docker environment
+* CLI-based execution
+
+---
+
+# Future Improvements
+
+Planned improvements for future project iterations:
+
+* unit and integration tests with pytest
+* Ruff and Black linting
+* schema validation with Pandera
+* Sharpe Ratio calculations
+* rolling volatility analysis
+* correlation matrix analytics
+* anomaly detection for volatility spikes
+* Streamlit dashboard integration
+* PostgreSQL support
+* orchestration with Airflow or Prefect
+
+---
+
+# Key Learning Areas
+
+This project focuses on developing practical Analytics Engineering skills:
+
+* ETL pipeline development
+* financial data processing
+* analytics-ready data modeling
+* automation workflows
+* production-style Python project structure
+* logging and observability
+* reproducible environments
+* business-oriented analytics reporting
+
+---
+
+# Disclaimer
+
+This project is intended for educational and portfolio purposes only.
+
+It does not provide financial or investment advice.
